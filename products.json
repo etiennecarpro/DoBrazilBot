@@ -1,0 +1,39 @@
+{
+  "products": [
+    {
+      "name": "XUP XUP Mangue",
+      "price": 2,
+      "stock": 20
+    },
+    {
+      "name": "XUP XUP Fraise",
+      "price": 2,
+      "stock": 20
+    },
+    {
+      "name": "XUP XUP Coco",
+      "price": 2,
+      "stock": 20
+    },
+    {
+      "name": "XUP XUP Citron",
+      "price": 2,
+      "stock": 20
+    },
+    {
+      "name": "XUP XUP Chocolat",
+      "price": 2,
+      "stock": 20
+    },
+    {
+      "name": "XUP XUP Avocat",
+      "price": 2,
+      "stock": 20
+    },
+    {
+      "name": "XUP XUP Fruit de la Passion",
+      "price": 2,
+      "stock": 20
+    }
+  ]
+}
