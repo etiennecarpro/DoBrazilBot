@@ -1,4 +1,4 @@
-import os, json, threading, uuid
+import os, json, threading, uuid, asyncio
 from flask import Flask
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler, MessageHandler, filters, ContextTypes
@@ -7,7 +7,10 @@ BOT_TOKEN = os.environ["BOT_TOKEN"]
 ADMIN_IDS = [980702308, 1360061189]
 PRODUCTS_FILE = "products.json"
 
-carts, orders, user_steps, waiting_admin = {}, {}, {}, {}
+carts = {}
+orders = {}
+user_steps = {}
+waiting_admin = {}
 
 web = Flask(__name__)
 
@@ -73,6 +76,7 @@ async def show_cart(chat_id, context):
         ])
 
     keyboard.append([InlineKeyboardButton("✅ Valider la commande", callback_data="checkout")])
+
     await context.bot.send_message(
         chat_id,
         "🛒 Ton panier :\n\n" + cart_text(cart, products),
@@ -85,6 +89,7 @@ async def panier(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
+
     chat_id = query.message.chat_id
     data = query.data
     products = load_products()
@@ -132,7 +137,10 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
         order_id = data.split("_")[1]
         order = orders.get(order_id)
         if order:
-            await context.bot.send_message(order["client_id"], "❌ Votre commande a été refusée.\n\n🇧🇷 Do Brazil vous remercie.")
+            await context.bot.send_message(
+                order["client_id"],
+                "❌ Votre commande a été refusée.\n\n🇧🇷 Do Brazil vous remercie."
+            )
             await query.message.reply_text("Commande refusée.")
 
 async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -264,9 +272,11 @@ def run_web():
     port = int(os.environ.get("PORT", 10000))
     web.run(host="0.0.0.0", port=port)
 
-
 if __name__ == "__main__":
     threading.Thread(target=run_web, daemon=True).start()
+
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
 
     app = Application.builder().token(BOT_TOKEN).build()
     app.add_handler(CommandHandler("start", start))
