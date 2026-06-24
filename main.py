@@ -264,6 +264,7 @@ def run_web():
     port = int(os.environ.get("PORT", 10000))
     web.run(host="0.0.0.0", port=port)
 
+
 if __name__ == "__main__":
     threading.Thread(target=run_web, daemon=True).start()
 
@@ -274,4 +275,4 @@ if __name__ == "__main__":
     app.add_handler(CallbackQueryHandler(button))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_text))
 
-    app.run_polling()
+    app.run_polling(close_loop=False)
